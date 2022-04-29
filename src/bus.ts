@@ -169,7 +169,7 @@ export class Bus {
    * @param queue The queue to write messages to
    * @param msg The message itself
    * @param options The options used for sending messages
-   * @returns A promise of the response message.
+   * @returns A promise of the response message
    */
   async call(
     queue: string,
