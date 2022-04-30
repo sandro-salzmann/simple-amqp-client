@@ -29,7 +29,7 @@ export const call = async ({
         ...queueOptions,
       });
 
-      var correlationId = uuidv4();
+      const correlationId = uuidv4();
 
       replyQueueEventEmitter.setMaxListeners(0);
       replyQueueEventEmitter.once(correlationId, (msgContent: string) => {
