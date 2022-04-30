@@ -9,7 +9,7 @@ type PublishOptions = {
   exchange?: string;
   queueOptions?: Options.AssertQueue;
   publishOptions?: Options.Publish;
-}
+};
 
 export const publish = ({
   channel,

@@ -8,7 +8,7 @@ type AnswerOptions = {
   onMessage: (msg: string) => Promise<string>;
   consumeOptions?: Options.Consume;
   queueOptions?: Options.AssertQueue;
-}
+};
 
 export const answer = async ({
   channel,

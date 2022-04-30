@@ -11,7 +11,7 @@ type CallOptions = {
   msg: string;
   publishOptions?: Options.Publish;
   queueOptions?: Options.AssertQueue;
-}
+};
 
 export const call = async ({
   channel,

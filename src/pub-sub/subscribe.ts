@@ -11,7 +11,7 @@ type SubscribeOptions = {
   exchangeOptions?: Options.AssertExchange;
   queueOptions?: Options.AssertQueue;
   consumeOptions?: Options.Consume;
-}
+};
 
 export const subscribe = async ({
   serviceName,
