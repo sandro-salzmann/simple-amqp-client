@@ -7,7 +7,7 @@
     "clean": "rimraf lib",
     "prebuild": "npm run clean",
     "build": "tsc",
-    "test": "jest --config jestconfig.json",
+    "test": "jest --config jestconfig.json --passWithNoTests",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\" --no-error-on-unmatched-pattern",
     "lint": "tslint -p tsconfig.json",
     "prepare": "npm run build",
