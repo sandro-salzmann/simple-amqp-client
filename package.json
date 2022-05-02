@@ -30,6 +30,7 @@
     "rpc"
   ],
   "author": "Sandro Salzmann",
+  "license": "MIT",
   "dependencies": {
     "amqplib": "^0.8.0",
     "debug": "^4.3.4",
