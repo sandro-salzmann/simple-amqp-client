@@ -5,6 +5,22 @@
 <p>A simple amqp client that provides an interface on a messaging-pattern abstraction level.</p>
 <p>Currently supported are pub/sub and rpc. </p>
 
+<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
+  <h2>Installation</h2>
+</a>
+<pre><code class="language-sh"><span class="hl-0">npm i simple-amqp-client</span>
+</code></pre>
+
+<a href="#getting-started" id="getting-started" style="color: inherit; text-decoration: none;">
+  <h2>Getting started</h2>
+</a>
+<p>Import the Bus class and connect to your bus.</p>
+<pre><code class="language-ts"><span class="hl-1">import</span><span class="hl-0"> { </span><span class="hl-2">Bus</span><span class="hl-0"> } </span><span class="hl-1">from</span><span class="hl-0"> </span><span class="hl-3">&#39;simple-amqp-client&#39;</span><span class="hl-0">;</span><br/><br/><span class="hl-0">...</span><br/><br/><span class="hl-4">const</span><span class="hl-0"> </span><span class="hl-5">bus</span><span class="hl-0"> = </span><span class="hl-4">new</span><span class="hl-0"> </span><span class="hl-6">Bus</span><span class="hl-0">(</span><span class="hl-3">`amqp://user:password@localhost:5672`</span><span class="hl-0">, </span><span class="hl-3">&quot;service-a&quot;</span><span class="hl-0">);</span><br/><span class="hl-1">await</span><span class="hl-0"> </span><span class="hl-2">bus</span><span class="hl-0">.</span><span class="hl-6">connect</span><span class="hl-0">();</span>
+</code></pre>
+<p>Then start using messaging patterns as you wish! You can find the communication details in the <a href="https://sandro-salzmann.github.io/simple-amqp-client/classes/Bus.html#answer">docs</a>.</p>
+<pre><code class="language-ts"><span class="hl-7">// pub/sub</span><br/><span class="hl-1">await</span><span class="hl-0"> </span><span class="hl-2">bus</span><span class="hl-0">.</span><span class="hl-6">subscribe</span><span class="hl-0">(</span><span class="hl-3">&#39;test.*&#39;</span><span class="hl-0">, (</span><span class="hl-2">msg</span><span class="hl-0">, </span><span class="hl-2">routingKey</span><span class="hl-0">) </span><span class="hl-4">=&gt;</span><span class="hl-0"> </span><span class="hl-2">console</span><span class="hl-0">.</span><span class="hl-6">log</span><span class="hl-0">(</span><span class="hl-3">`New test message: </span><span class="hl-4">${</span><span class="hl-2">msg</span><span class="hl-4">}</span><span class="hl-3">:</span><span class="hl-4">${</span><span class="hl-2">routingKey</span><span class="hl-4">}</span><span class="hl-3">`</span><span class="hl-0">));</span><br/><span class="hl-1">await</span><span class="hl-0"> </span><span class="hl-2">bus</span><span class="hl-0">.</span><span class="hl-6">publish</span><span class="hl-0">(</span><span class="hl-3">&#39;test.info&#39;</span><span class="hl-0">, </span><span class="hl-3">&#39;Hello world!&#39;</span><span class="hl-0">);</span><br/><span class="hl-7">// logs &#39;New test message: Hello world!:test.info&#39;</span><br/><br/><span class="hl-7">// rpc</span><br/><span class="hl-1">await</span><span class="hl-0"> </span><span class="hl-2">bus</span><span class="hl-0">.</span><span class="hl-6">answer</span><span class="hl-0">(</span><span class="hl-3">&#39;doUpperCasing&#39;</span><span class="hl-0">, </span><span class="hl-4">async</span><span class="hl-0"> (</span><span class="hl-2">msg</span><span class="hl-0">) </span><span class="hl-4">=&gt;</span><span class="hl-0"> </span><span class="hl-2">msg</span><span class="hl-0">.</span><span class="hl-6">toUpperCase</span><span class="hl-0">());</span><br/><span class="hl-4">const</span><span class="hl-0"> </span><span class="hl-5">response</span><span class="hl-0"> = </span><span class="hl-1">await</span><span class="hl-0"> </span><span class="hl-2">bus</span><span class="hl-0">.</span><span class="hl-6">call</span><span class="hl-0">(</span><span class="hl-3">&#39;doUpperCasing&#39;</span><span class="hl-0">, </span><span class="hl-3">&#39;hello world&#39;</span><span class="hl-0">);</span><br/><span class="hl-2">console</span><span class="hl-0">.</span><span class="hl-6">log</span><span class="hl-0">(</span><span class="hl-2">response</span><span class="hl-0">)</span><br/><span class="hl-7">// logs &#39;HELLO WORLD&#39;</span>
+</code></pre>
+
 <a href="#docs" id="docs" style="color: inherit; text-decoration: none;">
   <h2>Docs</h2>
 </a>
