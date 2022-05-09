@@ -104,7 +104,7 @@ export class Bus {
    * The default options guarantee that all published messages will be stored on the bus until one instance of each service has processed the message.
    *
    * @param routingKey The amqp routing key used for the message
-   * @param msg The message itself
+   * @param msg The message itself. Will be serialized using {@link stringify}.
    * @param options The options used for sending the message
    */
   async publish(
@@ -120,7 +120,7 @@ export class Bus {
     publish({
       channel,
       routingKey,
-      msg,
+      msg: this.stringify(msg),
       exchange,
       publishOptions,
       queueOptions,
@@ -167,7 +167,7 @@ export class Bus {
    * Check if the call has been processed by checking the return value.
    *
    * @param queue The queue to write messages to
-   * @param msg The message itself
+   * @param msg The message itself. Will be serialized using {@link stringify}.
    * @param options The options used for sending messages
    * @returns A promise of the response message
    */
@@ -181,7 +181,7 @@ export class Bus {
       channel,
       replyQueueEventEmitter: this.replyQueueEventEmitter,
       queue,
-      msg,
+      msg: this.stringify(msg),
       publishOptions,
       queueOptions,
     });
@@ -203,6 +203,13 @@ export class Bus {
     { consumeOptions, queueOptions }: AnswerOptions = {},
   ): Promise<void> {
     const channel = await this.getConnectedChannel();
-    await answer({ channel, queue, onMessage, consumeOptions, queueOptions });
+
+  /**
+   * Stringifies any input using JSON.
+   * @param value The input to stringify
+   * @returns The JSON string
+   */
+  private stringify(value: any) {
+    return JSON.stringify(value);
   }
 }

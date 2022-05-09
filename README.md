@@ -26,13 +26,13 @@ Then start using messaging patterns as you wish! You can find the communication 
 
 ```ts
 // pub/sub
-await bus.subscribe('test.*', (msg, routingKey) => console.log(`New test message: ${msg}:${routingKey}`));
-await bus.publish('test.info', 'Hello world!');
+await bus.subscribe('test.*', (msg, routingKey) => console.log(`New test message: ${msg.text}:${routingKey}`));
+await bus.publish('test.info', { text: 'Hello world!' });
 // logs 'New test message: Hello world!:test.info'
 
 // rpc
-await bus.answer('doUpperCasing', async (msg) => msg.toUpperCase());
-const response = await bus.call('doUpperCasing', 'hello world');
+await bus.answer('doUpperCasing', async (msg) => msg.text.toUpperCase());
+const response = await bus.call('doUpperCasing', { text: 'hello world' });
 console.log(response)
 // logs 'HELLO WORLD'
 ```

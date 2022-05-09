@@ -27,8 +27,9 @@ export const answer = async ({
     queue,
     async (msg) => {
       if (msg) {
-        const msgContent = msg.content.toString();
-        const msgLogMsg = `[${logMsg}, msgContent: ${msgContent}]`;
+        const msgString = msg.content.toString();
+        const msgContent = JSON.parse(msgString);
+        const msgLogMsg = `[${logMsg}, msgString: ${msgString}]`;
         debug(`Received call. ${msgLogMsg}`);
 
         debug(`Start processing call... ${msgLogMsg}`);
