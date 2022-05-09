@@ -13,7 +13,7 @@ type SubscribeOptions<Msg> = {
   consumeOptions?: Options.Consume;
 };
 
-export const subscribe = async <Msg> ({
+export const subscribe = async <Msg>({
   serviceName,
   channel,
   routingKey,

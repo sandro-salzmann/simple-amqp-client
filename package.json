@@ -1,7 +1,7 @@
 {
   "name": "simple-amqp-client",
   "description": "A simple amqp client that provides an interface on a messaging-pattern abstraction level.",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {

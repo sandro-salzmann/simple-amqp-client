@@ -209,7 +209,13 @@ export class Bus {
     { consumeOptions, queueOptions }: AnswerOptions = {},
   ): Promise<void> {
     const channel = await this.getConnectedChannel();
-    await answer<ReqMsg, ResMsg>({ channel, queue, onMessage, consumeOptions, queueOptions });
+    await answer<ReqMsg, ResMsg>({
+      channel,
+      queue,
+      onMessage,
+      consumeOptions,
+      queueOptions,
+    });
   }
 
   /**
