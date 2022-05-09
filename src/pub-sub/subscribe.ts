@@ -2,18 +2,18 @@ import { Channel, Options } from 'amqplib';
 import Debug from 'debug';
 const debug = Debug('simple-amqp-client:pub-sub');
 
-type SubscribeOptions = {
+type SubscribeOptions<Msg> = {
   serviceName: string;
   channel: Channel;
   routingKey: string;
-  onMessage: (msg: string, routingKey: string) => Promise<void>;
+  onMessage: (msg: Msg, routingKey: string) => Promise<void>;
   exchange?: string;
   exchangeOptions?: Options.AssertExchange;
   queueOptions?: Options.AssertQueue;
   consumeOptions?: Options.Consume;
 };
 
-export const subscribe = async ({
+export const subscribe = async <Msg> ({
   serviceName,
   channel,
   routingKey,
@@ -22,7 +22,7 @@ export const subscribe = async ({
   exchangeOptions,
   queueOptions,
   consumeOptions,
-}: SubscribeOptions) => {
+}: SubscribeOptions<Msg>) => {
   const logMsg = `exchange: ${exchange}, routingKey: ${routingKey}`;
   debug(`Trying to subscribe... [${logMsg}]`);
   await channel.assertExchange(exchange, 'topic', {
@@ -43,6 +43,7 @@ export const subscribe = async ({
       if (msg) {
         const msgRoutingKey = msg.fields.routingKey;
         const msgString = msg.content.toString();
+        const msgContent = JSON.parse(msgString) as Msg;
         const msgLogMsg = `msgRoutingKey: ${msgRoutingKey}, msgString: ${msgString}`;
         debug(`Start processing received message... [${logMsg}, ${msgLogMsg}]`);
         await onMessage(msgContent, msgRoutingKey);

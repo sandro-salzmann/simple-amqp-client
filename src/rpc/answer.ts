@@ -2,21 +2,21 @@ import { Channel, Options } from 'amqplib';
 import Debug from 'debug';
 const debug = Debug('simple-amqp-client:rpc');
 
-type AnswerOptions = {
+type AnswerOptions<Msg> = {
   channel: Channel;
   queue: string;
-  onMessage: (msg: string) => Promise<string>;
+  onMessage: (msg: Msg) => Promise<string>;
   consumeOptions?: Options.Consume;
   queueOptions?: Options.AssertQueue;
 };
 
-export const answer = async ({
+export const answer = async <Msg> ({
   channel,
   queue,
   onMessage,
   consumeOptions,
   queueOptions,
-}: AnswerOptions) => {
+}: AnswerOptions<Msg>) => {
   const logMsg = `queue: ${queue}`;
   debug(`Trying to start answering messages... [${logMsg}]`);
   await channel.assertQueue(queue, {
@@ -28,7 +28,7 @@ export const answer = async ({
     async (msg) => {
       if (msg) {
         const msgString = msg.content.toString();
-        const msgContent = JSON.parse(msgString);
+        const msgContent = JSON.parse(msgString) as Msg;
         const msgLogMsg = `[${logMsg}, msgString: ${msgString}]`;
         debug(`Received call. ${msgLogMsg}`);
 

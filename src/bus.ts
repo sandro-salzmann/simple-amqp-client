@@ -103,13 +103,14 @@ export class Bus {
    *
    * The default options guarantee that all published messages will be stored on the bus until one instance of each service has processed the message.
    *
+   * @typeParam Msg - Type of the message
    * @param routingKey The amqp routing key used for the message
    * @param msg The message itself. Will be serialized using {@link stringify}.
    * @param options The options used for sending the message
    */
-  async publish(
+  async publish<Msg = string>(
     routingKey: string,
-    msg: string,
+    msg: Msg,
     {
       exchange = DEFAULT_EXCHANGE_NAME,
       publishOptions,
@@ -133,13 +134,14 @@ export class Bus {
    * The default options guarantee that all published messages will be stored persistently on the bus until one instance of each service has processed the message.
    * All instances of the same running service should have the same {@link serviceName}, which is supplied during initialization.
    *
+   * @typeParam Msg - Type of a received message
    * @param routingKey The amqp routing key used for the messages that should be received
    * @param onMessage The callback that gets called every time a new message is received by this instance
    * @param options The options used for receiving messages
    */
-  async subscribe(
+  async subscribe<Msg = string>(
     routingKey: string,
-    onMessage: (msg: string, routingKey: string) => Promise<void>,
+    onMessage: (msg: Msg, routingKey: string) => Promise<void>,
     {
       exchange = DEFAULT_EXCHANGE_NAME,
       consumeOptions,
@@ -148,7 +150,7 @@ export class Bus {
     }: SubscribeOptions = { exchange: DEFAULT_EXCHANGE_NAME },
   ): Promise<void> {
     const channel = await this.getConnectedChannel();
-    await subscribe({
+    await subscribe<Msg>({
       serviceName: this.serviceName,
       channel,
       routingKey,
@@ -166,14 +168,15 @@ export class Bus {
    * The default options don't persistently store the messages on the bus and don't guarantee that a service will receive, process or answer the call successfully.
    * Check if the call has been processed by checking the return value.
    *
+   * @typeParam Msg - Type of the message
    * @param queue The queue to write messages to
    * @param msg The message itself. Will be serialized using {@link stringify}.
    * @param options The options used for sending messages
    * @returns A promise of the response message
    */
-  async call(
+  async call<Msg = string>(
     queue: string,
-    msg: string,
+    msg: Msg,
     { publishOptions, queueOptions }: CallOptions = {},
   ): Promise<string> {
     const channel = await this.getConnectedChannel();
@@ -193,16 +196,19 @@ export class Bus {
    * The default options don't persistently store the messages on the bus and don't guarantee that a service will receive, process or answer the call successfully.
    * Meaning, if a message is received twice, the client must have sent the message twice using {@link call}.
    *
+   * @typeParam Msg - Type of a received message
    * @param queue The queue to read messages from
    * @param onMessage The callback that gets called every time a new message is received
    * @param options The options used for receiving messages
    */
-  async answer(
+  async answer<Msg = string>(
     queue: string,
-    onMessage: (msg: string) => Promise<string>,
+    onMessage: (msg: Msg) => Promise<string>,
     { consumeOptions, queueOptions }: AnswerOptions = {},
   ): Promise<void> {
     const channel = await this.getConnectedChannel();
+    await answer<Msg>({ channel, queue, onMessage, consumeOptions, queueOptions });
+  }
 
   /**
    * Stringifies any input using JSON.
