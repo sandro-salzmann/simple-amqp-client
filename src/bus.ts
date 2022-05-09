@@ -139,7 +139,7 @@ export class Bus {
    */
   async subscribe(
     routingKey: string,
-    onMessage: (msg: string, routingKey: string) => void,
+    onMessage: (msg: string, routingKey: string) => Promise<void>,
     {
       exchange = DEFAULT_EXCHANGE_NAME,
       consumeOptions,

@@ -26,7 +26,7 @@ Then start using messaging patterns as you wish! You can find the communication 
 
 ```ts
 // pub/sub
-await bus.subscribe('test.*', (msg, routingKey) => console.log(`New test message: ${msg.text}:${routingKey}`));
+await bus.subscribe('test.*', async (msg, routingKey) => console.log(`New test message: ${msg.text}:${routingKey}`));
 await bus.publish('test.info', { text: 'Hello world!' });
 // logs 'New test message: Hello world!:test.info'
 

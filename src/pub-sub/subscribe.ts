@@ -6,7 +6,7 @@ type SubscribeOptions = {
   serviceName: string;
   channel: Channel;
   routingKey: string;
-  onMessage: (msg: string, routingKey: string) => void;
+  onMessage: (msg: string, routingKey: string) => Promise<void>;
   exchange?: string;
   exchangeOptions?: Options.AssertExchange;
   queueOptions?: Options.AssertQueue;
@@ -39,13 +39,13 @@ export const subscribe = async ({
   channel.bindQueue(queue, exchange, routingKey);
   channel.consume(
     queue,
-    (msg) => {
+    async (msg) => {
       if (msg) {
         const msgRoutingKey = msg.fields.routingKey;
         const msgString = msg.content.toString();
         const msgLogMsg = `msgRoutingKey: ${msgRoutingKey}, msgString: ${msgString}`;
         debug(`Start processing received message... [${logMsg}, ${msgLogMsg}]`);
-        onMessage(msgContent, msgRoutingKey);
+        await onMessage(msgContent, msgRoutingKey);
         debug(`Processed message. [${logMsg}, ${msgLogMsg}]`);
         // acknowledge message to make sure it gets processed by another
         // instance of this service in case this instance fails
