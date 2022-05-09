@@ -2,21 +2,21 @@ import { Channel, Options } from 'amqplib';
 import Debug from 'debug';
 const debug = Debug('simple-amqp-client:rpc');
 
-type AnswerOptions<Msg> = {
+type AnswerOptions<ReqMsg, ResMsg> = {
   channel: Channel;
   queue: string;
-  onMessage: (msg: Msg) => Promise<string>;
+  onMessage: (msg: ReqMsg) => Promise<ResMsg>;
   consumeOptions?: Options.Consume;
   queueOptions?: Options.AssertQueue;
 };
 
-export const answer = async <Msg> ({
+export const answer = async <ReqMsg, ResMsg>({
   channel,
   queue,
   onMessage,
   consumeOptions,
   queueOptions,
-}: AnswerOptions<Msg>) => {
+}: AnswerOptions<ReqMsg, ResMsg>) => {
   const logMsg = `queue: ${queue}`;
   debug(`Trying to start answering messages... [${logMsg}]`);
   await channel.assertQueue(queue, {
@@ -28,17 +28,17 @@ export const answer = async <Msg> ({
     async (msg) => {
       if (msg) {
         const msgString = msg.content.toString();
-        const msgContent = JSON.parse(msgString) as Msg;
         const msgLogMsg = `[${logMsg}, msgString: ${msgString}]`;
         debug(`Received call. ${msgLogMsg}`);
+        const msgContent = JSON.parse(msgString) as ReqMsg;
 
         debug(`Start processing call... ${msgLogMsg}`);
-        const responseMsg = await onMessage(msgContent);
+        const responseMsg = (await onMessage(msgContent)) as ResMsg;
         debug(`Processed call. ${msgLogMsg}`);
 
         debug(`Trying to reply to call... ${msgLogMsg}`);
         const { replyTo, correlationId } = msg.properties;
-        channel.sendToQueue(replyTo, Buffer.from(responseMsg), {
+        channel.sendToQueue(replyTo, Buffer.from(JSON.stringify(responseMsg)), {
           correlationId,
         });
         debug(`Replied to call. ${msgLogMsg}`);

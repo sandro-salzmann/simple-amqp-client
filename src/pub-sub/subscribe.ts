@@ -43,9 +43,9 @@ export const subscribe = async <Msg> ({
       if (msg) {
         const msgRoutingKey = msg.fields.routingKey;
         const msgString = msg.content.toString();
-        const msgContent = JSON.parse(msgString) as Msg;
         const msgLogMsg = `msgRoutingKey: ${msgRoutingKey}, msgString: ${msgString}`;
         debug(`Start processing received message... [${logMsg}, ${msgLogMsg}]`);
+        const msgContent = JSON.parse(msgString) as Msg;
         await onMessage(msgContent, msgRoutingKey);
         debug(`Processed message. [${logMsg}, ${msgLogMsg}]`);
         // acknowledge message to make sure it gets processed by another

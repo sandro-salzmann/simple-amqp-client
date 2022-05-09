@@ -13,7 +13,7 @@ type CallOptions = {
   queueOptions?: Options.AssertQueue;
 };
 
-export const call = async ({
+export const call = async <ResMsg>({
   channel,
   replyQueueEventEmitter,
   queue,
@@ -21,7 +21,7 @@ export const call = async ({
   publishOptions,
   queueOptions,
 }: CallOptions) =>
-  new Promise<string>(async (resolve, reject) => {
+  new Promise<ResMsg>(async (resolve, reject) => {
     try {
       const logMsg = `queue: ${queue}, msg: ${msg}`;
       await channel.assertQueue(queue, {
@@ -32,8 +32,9 @@ export const call = async ({
       const correlationId = uuidv4();
 
       replyQueueEventEmitter.setMaxListeners(0);
-      replyQueueEventEmitter.once(correlationId, (msgContent: string) => {
-        debug(`Call got answered. [${logMsg}, answerMsg: ${msgContent}]`);
+      replyQueueEventEmitter.once(correlationId, (msgString: string) => {
+        debug(`Call got answered. [${logMsg}, answerMsg: ${msgString}]`);
+        const msgContent = JSON.parse(msgString) as ResMsg;
         resolve(msgContent);
       });
 

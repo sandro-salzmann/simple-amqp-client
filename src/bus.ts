@@ -168,19 +168,20 @@ export class Bus {
    * The default options don't persistently store the messages on the bus and don't guarantee that a service will receive, process or answer the call successfully.
    * Check if the call has been processed by checking the return value.
    *
-   * @typeParam Msg - Type of the message
+   * @typeParam ReqMsg - Type of the request message
+   * @typeParam ResMsg - Type of the response message
    * @param queue The queue to write messages to
    * @param msg The message itself. Will be serialized using {@link stringify}.
    * @param options The options used for sending messages
    * @returns A promise of the response message
    */
-  async call<Msg = string>(
+  async call<ReqMsg = string, ResMsg = string>(
     queue: string,
-    msg: Msg,
+    msg: ReqMsg,
     { publishOptions, queueOptions }: CallOptions = {},
-  ): Promise<string> {
+  ): Promise<ResMsg> {
     const channel = await this.getConnectedChannel();
-    return call({
+    return call<ResMsg>({
       channel,
       replyQueueEventEmitter: this.replyQueueEventEmitter,
       queue,
@@ -196,18 +197,19 @@ export class Bus {
    * The default options don't persistently store the messages on the bus and don't guarantee that a service will receive, process or answer the call successfully.
    * Meaning, if a message is received twice, the client must have sent the message twice using {@link call}.
    *
-   * @typeParam Msg - Type of a received message
+   * @typeParam ReqMsg - Type of the request message
+   * @typeParam ResMsg - Type of the response message
    * @param queue The queue to read messages from
    * @param onMessage The callback that gets called every time a new message is received
    * @param options The options used for receiving messages
    */
-  async answer<Msg = string>(
+  async answer<ReqMsg = string, ResMsg = string>(
     queue: string,
-    onMessage: (msg: Msg) => Promise<string>,
+    onMessage: (msg: ReqMsg) => Promise<ResMsg>,
     { consumeOptions, queueOptions }: AnswerOptions = {},
   ): Promise<void> {
     const channel = await this.getConnectedChannel();
-    await answer<Msg>({ channel, queue, onMessage, consumeOptions, queueOptions });
+    await answer<ReqMsg, ResMsg>({ channel, queue, onMessage, consumeOptions, queueOptions });
   }
 
   /**
