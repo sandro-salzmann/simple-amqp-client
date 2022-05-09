@@ -25,14 +25,30 @@ await bus.connect();
 Then start using messaging patterns as you wish! You can find the communication details in the [docs](https://sandro-salzmann.github.io/simple-amqp-client/classes/Bus.html#answer).
 
 ```ts
+interface TestInterface {
+  info: string
+}
+
 // pub/sub
-await bus.subscribe('test.*', async (msg, routingKey) => console.log(`New test message: ${msg.text}:${routingKey}`));
-await bus.publish('test.info', { text: 'Hello world!' });
+await bus.subscribe<TestInterface>(
+    'test.*',
+    async (msg, routingKey) => console.log(`New test message: ${msg.text}:${routingKey}`)
+);
+await bus.publish<TestInterface>(
+    'test.info',
+    { text: 'Hello world!' }
+);
 // logs 'New test message: Hello world!:test.info'
 
 // rpc
-await bus.answer('doUpperCasing', async (msg) => msg.text.toUpperCase());
-const response = await bus.call('doUpperCasing', { text: 'hello world' });
+await bus.answer<TestInterface>(
+    'doUpperCasing',
+    async (msg) => msg.text.toUpperCase()
+);
+const response = await bus.call<TestInterface>(
+    'doUpperCasing',
+    { text: 'hello world' }
+);
 console.log(response)
 // logs 'HELLO WORLD'
 ```
