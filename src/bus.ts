@@ -141,7 +141,7 @@ export class Bus {
    *
    * @typeParam Msg - Type of a received message
    * @param routingKey The amqp routing key used for the messages that should be received
-   * @param onMessage The callback that gets called every time a new message is received by this instance
+   * @param onMessage The callback that gets called every time a new message is received by this instance. See [Error handling](../README.md#error-handling) for information about acknowledgments and redeliveries.
    * @param options The options used for receiving messages
    */
   async subscribe<Msg = string>(

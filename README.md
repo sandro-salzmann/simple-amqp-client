@@ -52,6 +52,28 @@ console.log(response.upperCaseText)
 // logs 'HELLO WORLD'
 ```
 
+### Error handling
+
+**Publish/Subscribe pattern**
+
+When a message couldn't be processed you might want to republish the message so it can be consumed by some instance of this service again.
+
+```ts
+await subscriber.subscribe<Foo>('test.*', async () => {
+    throw new Error('Database currently not available.');
+});
+```
+
+To do that just throw an error inside of the `onMessage` handler function. The message will be republished to the service after a delay of 3 seconds.
+
+You can prevent republishing a message while still rejecting it by throwing `{ invalidMsgFormat: true }`.
+
+```ts
+await defectSubscriber.subscribe<Foo>('test.*', async () => {
+    throw { invalidMsgFormat: true };
+});
+```
+
 ## Docs
 
 Check out the [documentation](https://sandro-salzmann.github.io/simple-amqp-client/).
