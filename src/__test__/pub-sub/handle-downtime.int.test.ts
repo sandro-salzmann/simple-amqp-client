@@ -10,7 +10,7 @@ it('should store messages on bus if a service is unavailable', async () => {
   const publisher = await connectBus();
 
   // subscribe to make queue known to bus
-  await subscriber1.subscribe<Foo>('test.*', async () => {});
+  await subscriber1.subscribe<Foo>('test.*', async () => undefined);
   // close subscriber
   subscriber1.close();
 

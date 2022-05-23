@@ -8,7 +8,7 @@ const { connectBus } = useBus();
 it('should work with one subscriber and one publisher', async () => {
   const subscriber = await connectBus();
   const publisher = await connectBus();
-  let receivedMsg: Foo | undefined = undefined;
+  let receivedMsg: Foo | undefined;
   let receivedCount = 0;
 
   await subscriber.subscribe<Foo>('test.*', async (msg) => {

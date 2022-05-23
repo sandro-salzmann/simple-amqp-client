@@ -65,9 +65,9 @@ it('should not redeliver invalid messages', async () => {
 });
 
 it('should redeliver messages only to the services that have not acknowledged the message and not to all services', async () => {
-  let defectSubscriberA = await connectBus('service-a');
-  let workingSubscriberA = await connectBus('service-a');
-  let workingSubscriberB = await connectBus('service-b');
+  const defectSubscriberA = await connectBus('service-a');
+  const workingSubscriberA = await connectBus('service-a');
+  const workingSubscriberB = await connectBus('service-b');
   const publisher = await connectBus();
   let receivedCountA = 0;
   let receivedCountB = 0;
