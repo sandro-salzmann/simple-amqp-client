@@ -1,4 +1,4 @@
-import amqp, { Channel, Options } from 'amqplib';
+import amqp, { Channel, Connection, Options } from 'amqplib';
 import Debug from 'debug';
 import { EventEmitter } from 'events';
 import { publish, subscribe } from './pub-sub';
@@ -31,6 +31,10 @@ export type AnswerOptions = {
 };
 
 export class Bus {
+  /**
+   * The bus connection.
+   */
+  private connection?: Connection;
   /**
    * The connected channel.
    */
@@ -66,6 +70,7 @@ export class Bus {
   async connect() {
     debug('Trying to connect to bus...');
     const connection = await amqp.connect(this.url);
+    this.connection = connection;
     const channel = await connection.createChannel();
     debug('Successfully connected to bus.');
     this.channel = channel;
@@ -216,6 +221,26 @@ export class Bus {
       consumeOptions,
       queueOptions,
     });
+  }
+
+  /**
+   * Closes the bus connection and sets {@link channel} and {@link connection} to `undefined`
+   */
+  async close() {
+    debug('Closing connection...');
+    try {
+      await this.channel?.close();
+      this.channel = undefined;
+    } catch (error) {
+      debug('Failed to close channel.', error);
+    }
+    try {
+      await this.connection?.close();
+      this.connection = undefined;
+    } catch (error) {
+      debug('Failed to close connection.', error);
+    }
+    debug('Finished closing connection.');
   }
 
   /**
