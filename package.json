@@ -35,12 +35,12 @@
   "author": "Sandro Salzmann",
   "license": "MIT",
   "dependencies": {
+    "@types/amqplib": "^0.8.2",
     "amqplib": "^0.8.0",
     "debug": "^4.3.4",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "@types/amqplib": "^0.8.2",
     "@types/debug": "^4.1.7",
     "@types/jest": "^27.4.1",
     "@types/uuid": "^8.3.4",
